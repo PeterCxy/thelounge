@@ -162,10 +162,10 @@ $(function() {
 				method: "POST",
 				success: function(res) {
 					var url = res.match(/url\: (.*)\n/)[1];
-					if (text_input.text().trim() != "") {
-						url = text_input.text().trim() + " " + url;
+					if (text_input.val().trim() != "") {
+						url = text_input.val().trim() + " " + url;
 					}
-					text_input.text(url);
+					text_input.val(url);
 					text_input.prop("disabled", false);
 				}
 			});
