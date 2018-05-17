@@ -82,6 +82,9 @@
 						<div class="input">
 							<span id="nick"></span>
 							<textarea id="input" class="mousetrap"></textarea>
+							<span id="add-pic-tooltip" class="tooltipped tooltipped-w tooltipped-no-touch" aria-label="Upload picture">
+							  <button id="add_pic" aria-label="Upload picture"></button>
+							</span>
 							<span id="submit-tooltip" class="tooltipped tooltipped-w tooltipped-no-touch" aria-label="Send message">
 								<button id="submit" type="submit" aria-label="Send message"></button>
 							</span>

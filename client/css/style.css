@@ -225,6 +225,7 @@ kbd {
 #settings .extra-help,
 #settings #play::before,
 #form #submit::before,
+#form #add_pic::before,
 #chat .away .from::before,
 #chat .back .from::before,
 #chat .invite .from::before,
@@ -295,6 +296,7 @@ kbd {
 #footer .help::before { content: "\f059"; /* http://fontawesome.io/icon/question/ */ }
 
 #form #submit::before { content: "\f1d8"; /* http://fontawesome.io/icon/paper-plane/ */ }
+#form #add_pic::before { content: "\f302"; /* https://fontawesome.com/icons/images */}
 
 #chat .away .from::before,
 #chat .back .from::before {
@@ -1873,7 +1875,7 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 	touch-action: pan-y;
 }
 
-#form #submit {
+#form #submit, #form #add_pic {
 	color: #9ca5b4;
 	font-size: 14px;
 	height: 32px;

@@ -140,6 +140,38 @@ $(function() {
 		return false;
 	});
 
+	// PeterCxy Mod: Upload picture through fars.ee
+	$("#form #add_pic").on("click", function(ev) {
+		ev.preventDefault();
+		var text_input = $('#input');
+		text_input.prop("disabled", true);
+		var input = $(document.createElement("input"));
+		input.attr("type", "file");
+		input.attr("accept", "image/*");
+		input.on("change", function() {
+			if (input[0].files.length == 0) return;
+			var data = new FormData();
+			data.append("c", input[0].files[0]);
+			$.ajax({
+				url: "https://fars.ee/",
+				data: data,
+				processData: false,
+				contentType: false,
+				cache: false,
+				method: "POST",
+				success: function(res) {
+					var url = res.match(/url\: (.*)\n/)[1];
+					if (text_input.text().trim() != "") {
+						url = text_input.text().trim() + " " + url;
+					}
+					text_input.text(url);
+					text_input.prop("disabled", false);
+				}
+			});
+		});
+		input.trigger("click");
+	});
+
 	chat.on("click", ".inline-channel", function() {
 		const name = $(this).attr("data-chan");
 		const chan = utils.findCurrentNetworkChan(name);
