@@ -144,7 +144,6 @@ $(function() {
 	$("#form #add_pic").on("click", function(ev) {
 		ev.preventDefault();
 		var text_input = $('#input');
-		text_input.prop("disabled", true);
 		var input = $(document.createElement("input"));
 		input.attr("type", "file");
 		input.attr("accept", "image/*");
@@ -160,13 +159,13 @@ $(function() {
 				contentType: false,
 				cache: false,
 				method: "POST",
+				timeout: 50000,
 				success: function(res) {
 					var url = res.match(/url\: (.*)\n/)[1];
 					if (text_input.val().trim() != "") {
 						url = text_input.val().trim() + " " + url;
 					}
 					text_input.val(url);
-					text_input.prop("disabled", false);
 				}
 			});
 		});
