@@ -152,6 +152,7 @@ $(function() {
 			if (input[0].files.length == 0) return;
 			var data = new FormData();
 			data.append("c", input[0].files[0]);
+			input.remove();
 			$.ajax({
 				url: "https://fars.ee/",
 				data: data,
