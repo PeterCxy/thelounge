@@ -5,6 +5,7 @@ const fsextra = require("fs-extra");
 const path = require("path");
 const crypto = require("crypto");
 const helper = require("../helper");
+const child_process = require("child_process");
 
 class Storage {
 	constructor() {
@@ -64,7 +65,20 @@ class Storage {
 					return callback("");
 				}
 
-				callback(url);
+				// PeterCxy Mod: convert .webp images on server side
+				// Needs to be enabled in config
+				if (helper.config.convertWebp && extension === "webp") {
+					child_process.exec(`convert '${filePath}' '${filePath}.png'`, (err) => {
+						if (err) {
+							log.error("Failed to convert webp", err);
+							callback("");
+						} else {
+							callback(url + ".png");
+						}
+					})
+				} else {
+					callback(url);
+				}
 			});
 		}).catch((err) => {
 			log.error("Failed to create storage folder", err);

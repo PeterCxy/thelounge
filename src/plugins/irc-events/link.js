@@ -283,7 +283,8 @@ function emitPreview(client, msg, preview) {
 
 function getRequestHeaders(headers) {
 	const formattedHeaders = {
-		"User-Agent": "Mozilla/5.0 (compatible; The Lounge IRC Client; +https://github.com/thelounge/thelounge)",
+		// PeterCxy Mod: Send Chrome in UA since otherwise some sites will serve HTML polyfill for webp images
+		"User-Agent": "Mozilla/5.0 (compatible; Chrome; The Lounge IRC Client; +https://github.com/thelounge/thelounge)",
 		"Accept": headers.accept || "*/*",
 	};
 
