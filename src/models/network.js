@@ -18,6 +18,7 @@ const filteredFromClient = {
 	highlightRegex: true,
 	irc: true,
 	password: true,
+	ignoreList: true,
 };
 
 function Network(attr) {
@@ -41,6 +42,7 @@ function Network(attr) {
 			NETWORK: "",
 		},
 		chanCache: [],
+		ignoreList: [],
 	});
 
 	if (!this.uuid) {
@@ -129,7 +131,7 @@ Network.prototype.createIrcFramework = function(client) {
 
 	// Request only new messages from ZNC if we have sqlite logging enabled
 	// See http://wiki.znc.in/Playback
-	if (client.config.log && Helper.config.messageStorage.includes("sqlite")) {
+	if (client.config.log && client.messageStorage.find((s) => s.canProvideMessages())) {
 		this.irc.requestCap("znc.in/playback");
 	}
 };
@@ -325,6 +327,7 @@ Network.prototype.export = function() {
 		"commands",
 		"ip",
 		"hostname",
+		"ignoreList",
 	]);
 
 	network.channels = this.channels

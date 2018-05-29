@@ -1250,15 +1250,18 @@ kbd {
 }
 
 #chat table.channel-list,
-#chat table.ban-list {
+#chat table.ban-list,
+#chat table.ignore-list {
 	margin: 5px 10px;
 	width: calc(100% - 30px);
 }
 
 #chat table.channel-list th,
 #chat table.ban-list th,
+#chat table.ignore-list th,
 #chat table.channel-list td,
-#chat table.ban-list td {
+#chat table.ban-list td,
+#chat.table.ignore-list td {
 	padding: 5px;
 	vertical-align: top;
 	border-bottom: #eee 1px solid;
@@ -1272,7 +1275,9 @@ kbd {
 #chat table.channel-list .topic,
 #chat table.ban-list .hostmask,
 #chat table.ban-list .banned_by,
-#chat table.ban-list .banned_at {
+#chat table.ban-list .banned_at,
+#chat table.ignore-list .hostmask,
+#chat table.ignore-list .when {
 	text-align: left;
 }
 
@@ -1492,6 +1497,7 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 	line-height: 1.6;
 	padding: 0 16px;
 	white-space: nowrap;
+	cursor: pointer;
 }
 
 #chat .user-mode::before {
@@ -1676,6 +1682,54 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 #settings .error {
 	color: #e74c3c;
 	margin-top: 0.2em;
+}
+
+.password-container {
+	position: relative;
+}
+
+.password-container input {
+	padding-right: 37px;
+}
+
+#sign-in .password-container {
+	width: 100%;
+}
+
+#sign-in .password-container .reveal-password {
+	top: 31px;
+	right: 0;
+}
+
+.password-container .reveal-password {
+	position: absolute;
+	top: 2px;
+	right: 15px;
+}
+
+.password-container .reveal-password span {
+	font: normal normal normal 14px/1 FontAwesome;
+	font-size: 16px;
+	color: #cdd3da;
+	width: 37px;
+	height: 37px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.password-container .reveal-password span:hover {
+	color: #79838c;
+}
+
+.password-container .reveal-password span::before {
+	content: "\f06e"; /* https://fontawesome.com/icons/eye?style=solid */
+	transition: color 0.2s;
+}
+
+.password-container .reveal-password.visible span::before {
+	content: "\f070"; /* https://fontawesome.com/icons/eye-slash?style=solid */
+	color: #ff4136;
 }
 
 #help .help-item {

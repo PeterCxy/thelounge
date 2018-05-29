@@ -14,6 +14,7 @@ let configPath;
 let usersPath;
 let storagePath;
 let packagesPath;
+let userLogsPath;
 
 const Helper = {
 	config: null,
@@ -32,6 +33,8 @@ const Helper = {
 	ip2hex,
 	mergeConfig,
 	getDefaultNick,
+	parseHostmask,
+	compareHostmask,
 
 	password: {
 		hash: passwordHash,
@@ -89,6 +92,7 @@ function setHome(newPath) {
 	usersPath = path.join(homePath, "users");
 	storagePath = path.join(homePath, "storage");
 	packagesPath = path.join(homePath, "packages");
+	userLogsPath = path.join(homePath, "logs");
 
 	// Reload config from new home location
 	if (fs.existsSync(configPath)) {
@@ -145,8 +149,8 @@ function getUserConfigPath(name) {
 	return path.join(usersPath, name + ".json");
 }
 
-function getUserLogsPath(name, network) {
-	return path.join(homePath, "logs", name, network);
+function getUserLogsPath() {
+	return userLogsPath;
 }
 
 function getStoragePath() {
@@ -223,4 +227,44 @@ function mergeConfig(oldConfig, newConfig) {
 			return srcValue;
 		}
 	});
+}
+
+function parseHostmask(hostmask) {
+	let nick = "";
+	let ident = "*";
+	let hostname = "*";
+	let parts = [];
+
+	// Parse hostname first, then parse the rest
+	parts = hostmask.split("@");
+
+	if (parts.length >= 2) {
+		hostname = parts[1] || "*";
+		hostmask = parts[0];
+	}
+
+	hostname = hostname.toLowerCase();
+
+	parts = hostmask.split("!");
+
+	if (parts.length >= 2) {
+		ident = parts[1] || "*";
+		hostmask = parts[0];
+	}
+
+	ident = ident.toLowerCase();
+
+	nick = hostmask.toLowerCase() || "*";
+
+	const result = {
+		nick: nick,
+		ident: ident,
+		hostname: hostname,
+	};
+
+	return result;
+}
+
+function compareHostmask(a, b) {
+	return (a.nick.toLowerCase() === b.nick.toLowerCase() || a.nick === "*") && (a.ident.toLowerCase() === b.ident.toLowerCase() || a.ident === "*") && (a.hostname.toLowerCase() === b.hostname.toLowerCase() || a.hostname === "*");
 }

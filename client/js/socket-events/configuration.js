@@ -1,12 +1,12 @@
 "use strict";
 
 const $ = require("jquery");
-const URI = require("urijs");
 const socket = require("../socket");
 const templates = require("../../views");
 const options = require("../options");
 const webpush = require("../webpush");
 const connect = $("#connect");
+const utils = require("../utils");
 
 socket.on("configuration", function(data) {
 	if (options.initialized) {
@@ -29,6 +29,8 @@ socket.on("configuration", function(data) {
 		pop.src = "audio/pop.ogg";
 		pop.play();
 	});
+
+	utils.togglePasswordField("#change-password .reveal-password");
 
 	options.initialize();
 	webpush.initialize();
@@ -84,12 +86,14 @@ socket.on("configuration", function(data) {
 				// Store the "previous" value, for next time
 				$(this).data("lastvalue", nick);
 			});
+
+		utils.togglePasswordField("#connect .reveal-password");
 	});
 
-	if ($(document.body).hasClass("public")) {
-		const params = URI(document.location.search).search(true);
+	if ($(document.body).hasClass("public") && "URLSearchParams" in window) {
+		const params = new URLSearchParams(document.location.search);
 
-		for (let key in params) {
+		for (let [key, value] of params) {
 			// Support `channels` as a compatibility alias with other clients
 			if (key === "channels") {
 				key = "join";
@@ -98,8 +102,6 @@ socket.on("configuration", function(data) {
 			if (!data.defaults.hasOwnProperty(key)) {
 				continue;
 			}
-
-			let value = params[key];
 
 			if (key === "join") {
 				value = value.split(",").map((chan) => {
