@@ -118,14 +118,41 @@ function processReceivedMessage(data) {
 		const nicks = channel.find(".userlist").data("nicks");
 
 		if (nicks) {
-			const find = nicks.indexOf(data.msg.from.nick);
+			let [msg_nick, is_bridge_bot] = processBridgeBotNick(data.msg.from.nick, data.msg.text);
+			const find = nicks.indexOf(msg_nick);
 
 			if (find !== -1) {
 				nicks.splice(find, 1);
-				nicks.unshift(data.msg.from.nick);
+				nicks.unshift(msg_nick);
+			} else if (is_bridge_bot) {
+				nicks.unshift(msg_nick);
 			}
 		}
 	}
+}
+
+// PeterCxy hack: parse nicks from bridge bots and add them to autocompletion
+// these bots send message with the following format:
+// [nick] text
+// or
+// <nick> text
+const BRIDGE_BOT_NICK_MAX = 18; // This is arbitrary
+const BRIDGE_BOT_NICK_START = ["[", "<"];
+const BRIDGE_BOT_NICK_END = ["]", ">"];
+function processBridgeBotNick(nick, text) {
+	let is_bridge_bot = false;
+	// Try all the possible combinations of nick markers
+	for (var i = 0; i < BRIDGE_BOT_NICK_START.length; i++) {
+		if (text.startsWith(BRIDGE_BOT_NICK_START[i])) {
+			let end = text.indexOf(BRIDGE_BOT_NICK_END[i]);
+			if (end !== -1 && end - 1 <= BRIDGE_BOT_NICK_MAX) {
+				nick = text.slice(1, end);
+				is_bridge_bot = true;
+				break;
+			}
+		}
+	}
+	return [nick, is_bridge_bot];
 }
 
 function notifyMessage(targetId, channel, msg) {
