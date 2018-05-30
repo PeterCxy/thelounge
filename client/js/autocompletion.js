@@ -7,6 +7,7 @@ const {Textcomplete, Textarea} = require("textcomplete");
 const emojiMap = require("./libs/simplemap.json");
 const options = require("./options");
 const constants = require("./constants");
+const XRegExp = require("xregexp");
 
 const input = $("#input");
 let textcomplete;
@@ -53,7 +54,8 @@ const emojiStrategy = {
 
 const nicksStrategy = {
 	id: "nicks",
-	match: /\B(@([a-zA-Z_[\]\\^{}|`@][a-zA-Z0-9_[\]\\^{}|`-]*)?)$/,
+	// PeterCxy hack: allow kanji in nickname completions
+	match: new XRegExp('\\B(@([a-zA-Z\\p{Han}_[\\]\\\\^{}|`@][a-zA-Z0-9\\p{Han}_[\\]\\\\^{}|`-]*)?)$'),
 	search(term, callback) {
 		term = term.slice(1);
 
