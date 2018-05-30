@@ -170,7 +170,7 @@ function processBridgeBotNick(nick, text) {
 		if (text.startsWith(BRIDGE_BOT_NICK_START[i])) {
 			let end = text.indexOf(BRIDGE_BOT_NICK_END[i]);
 			if (end !== -1 && end - 1 <= BRIDGE_BOT_NICK_MAX) {
-				nick = text.slice(1, end);
+				nick = text.slice(1, end).replace(/\x03(..(,..)?)?/g, "").replace(/\x02|\x1D|\x1F|\x16|\x0F/g, "");
 				is_bridge_bot = true;
 				break;
 			}
