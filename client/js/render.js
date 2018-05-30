@@ -32,6 +32,8 @@ module.exports = {
 	trimMessageInChannel,
 };
 
+const processNicks = require("./socket-events/msg").processNicks;
+
 function buildChannelMessages(container, chanId, chanType, messages) {
 	return messages.reduce((docFragment, message) => {
 		appendMessage(docFragment, chanId, chanType, message);
@@ -40,6 +42,10 @@ function buildChannelMessages(container, chanId, chanType, messages) {
 }
 
 function appendMessage(container, chanId, chanType, msg) {
+	// PeterCxy hack
+	// Parse every one to detect bridge bot messages
+	processNicks(chat.find("#chan-" + chanId), msg);
+	
 	if (utils.lastMessageId < msg.id) {
 		utils.lastMessageId = msg.id;
 	}
@@ -158,9 +164,11 @@ function renderUnreadMarker(template, firstUnread, channel) {
 }
 
 function renderChannelUsers(data) {
-	const users = chat.find("#chan-" + data.id).find(".userlist");
+	const channel = chat.find("#chan-" + data.id);
+	const users = channel.find(".userlist");
 	const nicks = data.users
-		.concat() // Make a copy of the user list, sort is applied in-place
+		.concat(users.data("bridge_nicks")) // Make a copy of the user list, sort is applied in-place
+		.filter((a) => a != null)
 		.sort((a, b) => b.lastMessage - a.lastMessage)
 		.map((a) => a.nick);
 

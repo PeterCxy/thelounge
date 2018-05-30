@@ -11,6 +11,10 @@ const webpush = require("../webpush");
 const chat = $("#chat");
 const sidebar = $("#sidebar");
 
+module.exports = {
+	processNicks
+};
+
 let pop;
 
 try {
@@ -115,19 +119,39 @@ function processReceivedMessage(data) {
 	}
 
 	if ((data.msg.type === "message" || data.msg.type === "action") && channel.hasClass("channel")) {
-		const nicks = channel.find(".userlist").data("nicks");
+		processNicks(channel, data.msg);
+	}
+}
 
-		if (nicks) {
-			let [msg_nick, is_bridge_bot] = processBridgeBotNick(data.msg.from.nick, data.msg.text);
-			const find = nicks.indexOf(msg_nick);
+// PeterCxy hack
+function ensureData(elem, name, val) {
+	if (elem.data(name) == null) {
+		elem.data(name, val);
+	}
+}
 
-			if (find !== -1) {
-				nicks.splice(find, 1);
-				nicks.unshift(msg_nick);
-			} else if (is_bridge_bot) {
-				nicks.unshift(msg_nick);
-			}
-		}
+// PeterCxy hack
+function processNicks(channel, msg) {
+	const userlist = channel.find(".userlist");
+	if (userlist.length == 0) return;
+	ensureData(userlist, "nicks", [null]);
+	ensureData(userlist, "bridge_nicks", [null]);
+	const nicks = userlist.data("nicks");
+
+	let [msg_nick, is_bridge_bot] = processBridgeBotNick(msg.from.nick, msg.text);
+	const find = nicks.indexOf(msg_nick);
+
+	if (find !== -1) {
+		nicks.splice(find, 1);
+		nicks.unshift(msg_nick);
+	} else if (is_bridge_bot) {
+		nicks.unshift(msg_nick);
+
+		let bridge_nicks = userlist.data("bridge_nicks");
+		bridge_nicks.unshift({
+			nick: msg_nick,
+			lastMessage: new Date(msg.time).getTime()
+		});
 	}
 }
 
