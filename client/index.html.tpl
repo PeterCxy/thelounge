@@ -49,6 +49,9 @@
 	</head>
 	<body class="signed-out<%- public ? " public" : "" %>" data-transports="<%- JSON.stringify(transports) %>">
 		<div id="viewport" role="tablist">
+			<div id="progressbar-container">
+				<div id="progressbar"></div>
+			</div>
 			<aside id="sidebar">
 				<div class="networks"></div>
 				<div class="empty">

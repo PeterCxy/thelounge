@@ -2560,3 +2560,24 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 #chat table.channel-list .topic {
 	white-space: pre-wrap;
 }
+
+/* PeterCxy hack: progress bar for uploading */
+#progressbar-container {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 3px;
+	background: transparent;
+	z-index: 10000;
+}
+
+#progressbar-container #progressbar {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 0;
+	height: 3px;
+	background: #1E88E5;
+	transition: all 0.5s linear;
+}

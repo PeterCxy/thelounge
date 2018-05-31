@@ -160,6 +160,18 @@ $(function() {
 				cache: false,
 				method: "POST",
 				timeout: 50000,
+				xhr: function() {
+					let jqXHR = new window.XMLHttpRequest();
+					jqXHR.upload.addEventListener("progress", function(ev) {
+						if (ev.lengthComputable) {
+							$('#progressbar').css("width", (ev.loaded * 100 / ev.total) + "vw");
+						}
+					});
+					return jqXHR;
+				},
+				complete: function() {
+					$('#progressbar').css("width", 0);
+				},
 				success: function(res) {
 					var url = res.match(/url\: (.*)\n/)[1];
 					if (text_input.val().trim() != "") {
