@@ -3,6 +3,7 @@
 const _ = require("lodash");
 const Helper = require("../helper");
 const User = require("./user");
+const Msg = require("./msg");
 const storage = require("../plugins/storage");
 
 module.exports = Chan;
@@ -48,8 +49,23 @@ Chan.prototype.pushMessage = function(client, msg, increasesUnread) {
 	// If this channel is open in any of the clients, do not increase unread counter
 	const isOpen = _.find(client.attachedClients, {openChannel: chan}) !== undefined;
 
-	if ((increasesUnread || msg.highlight) && !isOpen) {
-		obj.unread = ++this.unread;
+	if (msg.self) {
+		// reset counters/markers when receiving self-/echo-message
+		this.unread = 0;
+		this.firstUnread = 0;
+		this.highlight = 0;
+	} else if (!isOpen) {
+		if (!this.firstUnread) {
+			this.firstUnread = msg.id;
+		}
+
+		if (increasesUnread || msg.highlight) {
+			obj.unread = ++this.unread;
+		}
+
+		if (msg.highlight) {
+			obj.highlight = ++this.highlight;
+		}
 	}
 
 	client.emit("msg", obj);
@@ -69,20 +85,6 @@ Chan.prototype.pushMessage = function(client, msg, increasesUnread) {
 		// so for now, just don't implement dereferencing for this edge case.
 		if (Helper.config.prefetch && Helper.config.prefetchStorage && Helper.config.maxHistory > 0) {
 			this.dereferencePreviews(deleted);
-		}
-	}
-
-	if (msg.self) {
-		// reset counters/markers when receiving self-/echo-message
-		this.firstUnread = 0;
-		this.highlight = 0;
-	} else if (!isOpen) {
-		if (!this.firstUnread) {
-			this.firstUnread = msg.id;
-		}
-
-		if (msg.highlight) {
-			this.highlight++;
 		}
 	}
 };
@@ -184,9 +186,19 @@ Chan.prototype.writeUserLog = function(client, msg) {
 		return;
 	}
 
+	let targetChannel = this;
+
 	// Is this particular message or channel loggable
 	if (!msg.isLoggable() || !this.isLoggable()) {
-		return;
+		// Because notices are nasty and can be shown in active channel on the client
+		// if there is no open query, we want to always log notices in the sender's name
+		if (msg.type === Msg.Type.NOTICE && msg.showInActive) {
+			targetChannel = {
+				name: msg.from.nick,
+			};
+		} else {
+			return;
+		}
 	}
 
 	// Find the parent network where this channel is in
@@ -197,7 +209,7 @@ Chan.prototype.writeUserLog = function(client, msg) {
 	}
 
 	for (const messageStorage of client.messageStorage) {
-		messageStorage.index(target.network, this, msg);
+		messageStorage.index(target.network, targetChannel, msg);
 	}
 };
 

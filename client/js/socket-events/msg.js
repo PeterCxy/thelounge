@@ -180,7 +180,9 @@ function processBridgeBotNick(nick, text) {
 }
 
 function notifyMessage(targetId, channel, msg) {
-	const unread = msg.unread;
+	const serverUnread = msg.unread;
+	const serverHighlight = msg.highlight;
+
 	msg = msg.msg;
 
 	if (msg.self) {
@@ -256,13 +258,17 @@ function notifyMessage(targetId, channel, msg) {
 		}
 	}
 
-	if (!unread || button.hasClass("active")) {
+	if (!serverUnread || button.hasClass("active")) {
 		return;
 	}
 
-	const badge = button.find(".badge").html(helpers_roundBadgeNumber(unread));
+	const badge = button.find(".badge").html(helpers_roundBadgeNumber(serverUnread));
 
 	if (msg.highlight) {
-		badge.addClass("highlight");
+		badge
+			.attr("data-highlight", serverHighlight)
+			.addClass("highlight");
+
+		utils.updateTitle();
 	}
 }

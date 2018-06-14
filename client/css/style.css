@@ -266,6 +266,8 @@ kbd {
 .context-menu-user::before { content: "\f007"; /* http://fontawesome.io/icon/user/ */ }
 .context-menu-close::before { content: "\f00d"; /* http://fontawesome.io/icon/times/ */ }
 .context-menu-list::before { content: "\f03a"; /* http://fontawesome.io/icon/list/ */ }
+.context-menu-disconnect::before { content: "\f0c1"; /* https://fontawesome.com/icons/unlink?style=solid */ }
+.context-menu-connect::before { content: "\f127"; /* https://fontawesome.com/icons/link?style=solid */ }
 .context-menu-action-whois::before { content: "\f05a"; /* http://fontawesome.io/icon/info-circle/  */ }
 .context-menu-action-kick::before { content: "\f05e"; /* http://fontawesome.io/icon/ban/ */ }
 .context-menu-action-op::before { content: "\f1fa"; /* http://fontawesome.io/icon/at/ */ }
@@ -588,6 +590,7 @@ kbd {
 #sidebar .lobby-wrap {
 	display: flex;
 	flex-grow: 1;
+	overflow: hidden;
 }
 
 #sidebar .chan.lobby .lobby-wrap:hover,
@@ -1184,7 +1187,7 @@ kbd {
 
 /* Parsed nicks and channels */
 
-.chat .user,
+#chat .user,
 .inline-channel {
 	cursor: pointer;
 	transition: opacity 0.2s;
@@ -1427,7 +1430,7 @@ kbd {
 }
 
 #chat .toggle-content .more::after {
-	content: attr(aria-label);
+	content: " " attr(aria-label);
 }
 
 #chat .toggle-content .more-caret {
@@ -1497,7 +1500,6 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 	line-height: 1.6;
 	padding: 0 16px;
 	white-space: nowrap;
-	cursor: pointer;
 }
 
 #chat .user-mode::before {

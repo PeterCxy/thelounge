@@ -58,7 +58,7 @@ const config = {
 				include: [
 					path.resolve(__dirname, "client/views"),
 				],
-				use: {
+				use: [{
 					loader: "handlebars-loader",
 					options: {
 						helperDirs: [
@@ -68,7 +68,14 @@ const config = {
 							".tpl",
 						],
 					},
-				},
+				}, {
+					loader: "html-minifier-loader",
+					options: {
+						ignoreCustomFragments: [
+							/{{[\s\S]*?}}/,
+						],
+					},
+				}],
 			},
 		],
 	},

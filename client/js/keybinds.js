@@ -41,7 +41,7 @@ Mousetrap.bind([
 	"alt+up",
 	"alt+down",
 ], function(e, keys) {
-	const channels = sidebar.find(".chan");
+	const channels = sidebar.find(".chan").not(".network.collapsed :not(.lobby)");
 	const index = channels.index(channels.filter(".active"));
 	const direction = keys.split("+").pop();
 	let target;
@@ -247,16 +247,22 @@ const ignoredKeys = {
 	224: true, // Meta
 };
 
-$(document.body).on("keydown", (e) => {
-	// Ignore if target isn't body (e.g. focused into input)
+$(document).on("keydown", (e) => {
 	// Ignore any key that uses alt modifier
 	// Ignore keys defined above
-	if (e.target !== document.body || e.altKey || ignoredKeys[e.which]) {
+	if (e.altKey || ignoredKeys[e.which]) {
 		return;
 	}
 
 	// Ignore all ctrl keys except for ctrl+v to allow pasting
 	if ((e.ctrlKey || e.metaKey) && e.which !== 86) {
+		return;
+	}
+
+	const tagName = e.target.tagName;
+
+	// Ignore if we're already typing into <input> or <textarea>
+	if (tagName === "INPUT" || tagName === "TEXTAREA") {
 		return;
 	}
 

@@ -190,12 +190,12 @@ $(function() {
 
 		if (chan.length) {
 			chan.trigger("click");
-		} else {
-			socket.emit("input", {
-				target: chat.data("id"),
-				text: "/join " + name,
-			});
 		}
+
+		socket.emit("input", {
+			target: chat.data("id"),
+			text: "/join " + name,
+		});
 	});
 
 	chat.on("click", ".condensed-summary .content", function() {
@@ -232,6 +232,7 @@ $(function() {
 			self.addClass("active")
 				.attr("aria-selected", true)
 				.find(".badge")
+				.attr("data-highlight", 0)
 				.removeClass("highlight")
 				.empty();
 
@@ -268,21 +269,13 @@ $(function() {
 			.trigger("show");
 
 		utils.togglePreviewMoreButtonsIfNeeded();
-
-		let title = $(document.body).data("app-name");
-		const chanTitle = chan.attr("aria-label");
-
-		if (chanTitle.length > 0) {
-			title = `${chanTitle} — ${title}`;
-		}
-
-		document.title = title;
+		utils.updateTitle();
 
 		const type = chan.data("type");
 		let placeholder = "";
 
 		if (type === "channel" || type === "query") {
-			placeholder = `Write to ${chanTitle}`;
+			placeholder = `Write to ${chan.attr("aria-label")}`;
 		}
 
 		input
@@ -344,49 +337,8 @@ $(function() {
 	$("#help").on("click", "#view-changelog, #back-to-help", openWindow);
 	$("#changelog").on("click", "#back-to-help", openWindow);
 
-	function closeChan(chan) {
-		let cmd = "/close";
-
-		if (chan.hasClass("lobby")) {
-			cmd = "/quit";
-			const server = chan.find(".name").html();
-
-			if (!confirm("Disconnect from " + server + "?")) { // eslint-disable-line no-alert
-				return false;
-			}
-		}
-
-		socket.emit("input", {
-			target: chan.data("id"),
-			text: cmd,
-		});
-		chan.css({
-			transition: "none",
-			opacity: 0.4,
-		});
-		return false;
-	}
-
 	sidebar.on("click", ".close", function() {
-		closeChan($(this).closest(".chan"));
-	});
-
-	const getCloseDisplay = (target) => {
-		if (target.hasClass("lobby")) {
-			return "Disconnect";
-		} else if (target.hasClass("channel")) {
-			return "Leave";
-		}
-
-		return "Close";
-	};
-
-	contextMenuFactory.addContextMenuItem({
-		check: (target) => target.hasClass("chan"),
-		className: "close",
-		displayName: getCloseDisplay,
-		data: (target) => target.attr("data-target"),
-		callback: (itemData) => closeChan($(`.networks .chan[data-target="${itemData}"]`)),
+		utils.closeChan($(this).closest(".chan"));
 	});
 
 	$(document).on("visibilitychange focus click", () => {

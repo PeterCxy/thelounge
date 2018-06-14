@@ -18,8 +18,10 @@ module.exports = {
 	scrollIntoViewNicely,
 	hasRoleInChannel,
 	move,
+	closeChan,
 	resetHeight,
 	toggleNotificationMarkers,
+	updateTitle,
 	togglePasswordField,
 	requestIdleCallback,
 	togglePreviewMoreButtonsIfNeeded,
@@ -98,6 +100,27 @@ function toggleNotificationMarkers(newState) {
 	viewport.toggleClass("notified", newState);
 }
 
+function updateTitle() {
+	let title = $(document.body).data("app-name");
+	const chanTitle = $("#sidebar").find(".chan.active").attr("aria-label");
+
+	if (chanTitle.length > 0) {
+		title = `${chanTitle} — ${title}`;
+	}
+
+	// add highlight count to title
+	let alertEventCount = 0;
+	$(".badge.highlight").each(function() {
+		alertEventCount += parseInt($(this).attr("data-highlight"));
+	});
+
+	if (alertEventCount > 0) {
+		title = `(${alertEventCount}) ${title}`;
+	}
+
+	document.title = title;
+}
+
 function togglePasswordField(elem) {
 	$(elem).on("click", function() {
 		const $this = $(this);
@@ -136,6 +159,30 @@ function move(array, old_index, new_index) {
 
 	array.splice(new_index, 0, array.splice(old_index, 1)[0]);
 	return array;
+}
+
+function closeChan(chan) {
+	const socket = require("./socket");
+	let cmd = "/close";
+
+	if (chan.hasClass("lobby")) {
+		cmd = "/quit";
+		const server = chan.find(".name").html();
+
+		if (!confirm("Disconnect from " + server + "?")) { // eslint-disable-line no-alert
+			return false;
+		}
+	}
+
+	socket.emit("input", {
+		target: chan.data("id"),
+		text: cmd,
+	});
+	chan.css({
+		transition: "none",
+		opacity: 0.4,
+	});
+	return false;
 }
 
 function requestIdleCallback(callback, timeout) {
