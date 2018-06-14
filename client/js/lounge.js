@@ -140,7 +140,7 @@ $(function() {
 		return false;
 	});
 
-	// PeterCxy Mod: Upload picture through fars.ee
+	// PeterCxy Mod: Upload picture through one.angry.im
 	$("#form #add_pic").on("click", function(ev) {
 		ev.preventDefault();
 		var text_input = $('#input');
@@ -150,10 +150,10 @@ $(function() {
 		input.on("change", function() {
 			if (input[0].files.length == 0) return;
 			var data = new FormData();
-			data.append("c", input[0].files[0]);
+			data.append("file", input[0].files[0]);
 			input.remove();
 			$.ajax({
-				url: "https://fars.ee/",
+				url: "https://one.angry.im/images?noredir",
 				data: data,
 				processData: false,
 				contentType: false,
@@ -177,7 +177,7 @@ $(function() {
 					if (text_input.val().trim() != "") {
 						url = text_input.val().trim() + " " + url;
 					}
-					text_input.val(url);
+					text_input.val(url + "?o");
 				}
 			});
 		});
