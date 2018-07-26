@@ -19,7 +19,7 @@ let pop;
 
 try {
 	pop = new Audio();
-	pop.src = "audio/pop.ogg";
+	pop.src = "audio/pop.wav";
 } catch (e) {
 	pop = {
 		play: $.noop,
@@ -101,7 +101,12 @@ function processReceivedMessage(data) {
 
 	// Clear unread/highlight counter if self-message
 	if (data.msg.self) {
-		sidebarTarget.find(".badge").removeClass("highlight").empty();
+		sidebarTarget.find(".badge")
+			.attr("data-highlight", 0)
+			.removeClass("highlight")
+			.empty();
+
+		utils.updateTitle();
 	}
 
 	let messageLimit = 0;
@@ -262,12 +267,12 @@ function notifyMessage(targetId, channel, msg) {
 		return;
 	}
 
-	const badge = button.find(".badge").html(helpers_roundBadgeNumber(serverUnread));
+	const badge = button.find(".badge")
+		.attr("data-highlight", serverHighlight)
+		.html(helpers_roundBadgeNumber(serverUnread));
 
 	if (msg.highlight) {
-		badge
-			.attr("data-highlight", serverHighlight)
-			.addClass("highlight");
+		badge.addClass("highlight");
 
 		utils.updateTitle();
 	}

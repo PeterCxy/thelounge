@@ -60,7 +60,7 @@ function hasRoleInChannel(channel, roles, nick) {
 function scrollIntoViewNicely(el) {
 	// Ideally this would use behavior: "smooth", but that does not consistently work in e.g. Chrome
 	// https://github.com/iamdustan/smoothscroll/issues/28#issuecomment-364061459
-	el.scrollIntoView({block: "nearest", inline: "nearest"});
+	el.scrollIntoView({block: "center", inline: "nearest"});
 }
 
 function collapse() {
@@ -104,7 +104,7 @@ function updateTitle() {
 	let title = $(document.body).data("app-name");
 	const chanTitle = $("#sidebar").find(".chan.active").attr("aria-label");
 
-	if (chanTitle.length > 0) {
+	if (chanTitle && chanTitle.length > 0) {
 		title = `${chanTitle} — ${title}`;
 	}
 

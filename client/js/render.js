@@ -107,6 +107,23 @@ function buildChatMessage(msg) {
 		template = "msg_unhandled";
 	}
 
+	// Make the MOTDs a little nicer if possible
+	if (msg.type === "motd") {
+		let lines = msg.text.split("\n");
+
+		// If all non-empty lines of the MOTD start with a hyphen (which is common
+		// across MOTDs), remove all the leading hyphens.
+		if (lines.every((line) => line === "" || line[0] === "-")) {
+			lines = lines.map((line) => line.substr(2));
+		}
+
+		// Remove empty lines around the MOTD (but not within it)
+		msg.text = lines
+			.map((line) => line.replace(/\s*$/, ""))
+			.join("\n")
+			.replace(/^[\r\n]+|[\r\n]+$/g, "");
+	}
+
 	const renderedMessage = $(templates[template](msg));
 	const content = renderedMessage.find(".content");
 

@@ -1,8 +1,7 @@
 "use strict";
 
-global.log = require("../log.js");
-
 const _ = require("lodash");
+const log = require("../log");
 const fs = require("fs");
 const path = require("path");
 const program = require("commander");
@@ -34,6 +33,16 @@ if (!fs.existsSync(path.join(
 }
 
 Helper.setHome(process.env.THELOUNGE_HOME || Utils.defaultHome());
+
+// Check config file owner and warn if we're running under a different user
+if (process.getuid) {
+	fs.stat(path.join(Helper.getHomePath(), "config.js"), (err, stat) => {
+		if (!err && stat.uid !== process.getuid()) {
+			log.warn("Config file owner does not match the user you are currently running The Lounge as.");
+			log.warn("To avoid issues, you should execute The Lounge commands under the same user.");
+		}
+	});
+}
 
 Utils.checkOldHome();
 

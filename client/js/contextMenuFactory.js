@@ -60,8 +60,6 @@ function addWhoisItem() {
 			target: $("#chat").data("id"),
 			text: "/whois " + itemData,
 		});
-
-		$(`.channel.active .userlist .user[data-name="${itemData}"]`).trigger("click");
 	}
 
 	addContextMenuItem({
@@ -77,10 +75,10 @@ function addWhoisItem() {
 	});
 
 	addContextMenuItem({
-		check: (target) => target.hasClass("user"),
+		check: (target) => target.hasClass("user") || target.hasClass("query"),
 		className: "action-whois",
 		displayName: "User information",
-		data: (target) => target.attr("data-name"),
+		data: (target) => target.attr("data-name") || target.attr("aria-label"),
 		callback: whois,
 	});
 }
@@ -129,57 +127,35 @@ function addCloseItem() {
 }
 
 function addConnectItem() {
-	let clickedNetwork;
-
-	function isDisconnected(target) {
-		return target.parent().hasClass("not-connected");
-	}
-
-	function connect() {
+	function connect(itemData) {
 		socket.emit("input", {
-			target: $("#chat").data("id"),
+			target: Number(itemData),
 			text: "/connect",
 		});
 	}
 
-	function check(target) {
-		clickedNetwork = target;
-		return target.hasClass("lobby") && isDisconnected(target);
-	}
-
 	addContextMenuItem({
-		check: check,
+		check: (target) => target.hasClass("lobby") && target.parent().hasClass("not-connected"),
 		className: "connect",
 		displayName: "Connect",
-		data: () => clickedNetwork.data("id"),
+		data: (target) => target.data("id"),
 		callback: connect,
 	});
 }
 
 function addDisconnectItem() {
-	let clickedNetwork;
-
-	function isConnected(target) {
-		return !target.parent().hasClass("not-connected");
-	}
-
-	function disconnect() {
+	function disconnect(itemData) {
 		socket.emit("input", {
-			target: $("#chat").data("id"),
+			target: Number(itemData),
 			text: "/disconnect",
 		});
 	}
 
-	function check(target) {
-		clickedNetwork = target;
-		return target.hasClass("lobby") && isConnected(target);
-	}
-
 	addContextMenuItem({
-		check: check,
+		check: (target) => target.hasClass("lobby") && !target.parent().hasClass("not-connected"),
 		className: "disconnect",
 		displayName: "Disconnect",
-		data: () => clickedNetwork.data("id"),
+		data: (target) => target.data("id"),
 		callback: disconnect,
 	});
 }
@@ -387,6 +363,7 @@ function addIgnoreListItem() {
 }
 
 function addDefaultItems() {
+	addFocusItem();
 	addWhoisItem();
 	addQueryItem();
 	addKickItem();
@@ -394,7 +371,6 @@ function addDefaultItems() {
 	addDeopItem();
 	addVoiceItem();
 	addDevoiceItem();
-	addFocusItem();
 	addEditNetworkItem();
 	addJoinItem();
 	addChannelListItem();

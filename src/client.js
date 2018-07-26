@@ -1,6 +1,7 @@
 "use strict";
 
 const _ = require("lodash");
+const log = require("./log");
 const colors = require("chalk");
 const Chan = require("./models/chan");
 const crypto = require("crypto");
@@ -213,6 +214,7 @@ Client.prototype.connect = function(args) {
 		ip: args.ip || (client.config && client.config.ip) || client.ip,
 		hostname: args.hostname || (client.config && client.config.hostname) || client.hostname,
 		channels: channels,
+		ignoreList: args.ignoreList ? args.ignoreList : [],
 	});
 
 	// Set network lobby channel id
