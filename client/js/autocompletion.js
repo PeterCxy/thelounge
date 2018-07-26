@@ -18,7 +18,7 @@ module.exports = {
 	disable() {
 		if (enabled) {
 			input.off("input.tabcomplete");
-			Mousetrap(input.get(0)).off("tab", "keydown");
+			Mousetrap(input.get(0)).unbind("tab", "keydown");
 			textcomplete.destroy();
 			enabled = false;
 		}
@@ -320,7 +320,7 @@ function completeChans(word) {
 		.each(function() {
 			const self = $(this);
 
-			if (!self.hasClass("lobby")) {
+			if (self.hasClass("channel")) {
 				words.push(self.attr("aria-label"));
 			}
 		});

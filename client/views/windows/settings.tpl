@@ -14,6 +14,12 @@
 	</div>
 
 	<div class="row">
+		<div class="col-sm-12">
+			<h2>Native app</h2>
+			<button type="button" class="btn" id="webapp-install-button" hidden>Add The Lounge to Home screen</button>
+			<button type="button" class="btn" id="make-default-client">Open irc:// URLs with The Lounge</button>
+		</div>
+
 		{{#unless public}}
 		<div class="col-sm-12" data-advanced>
 			<h2>

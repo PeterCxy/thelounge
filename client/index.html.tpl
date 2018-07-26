@@ -53,9 +53,15 @@
 				<div id="progressbar"></div>
 			</div>
 			<aside id="sidebar">
-				<div class="networks"></div>
-				<div class="empty">
-					You're not connected to any networks yet.
+				<div class="scrollable-area">
+					<div class="logo-container">
+						<img src="img/logo-<%- public ? 'horizontal-' : '' %>transparent-bg.svg" class="logo" alt="The Lounge">
+						<img src="img/logo-<%- public ? 'horizontal-' : '' %>transparent-bg-inverted.svg" class="logo-inverted" alt="The Lounge">
+					</div>
+					<div class="networks"></div>
+					<div class="empty">
+						You are not connected to any networks yet.
+					</div>
 				</div>
 				<footer id="footer">
 					<span class="tooltipped tooltipped-n tooltipped-no-touch" aria-label="Sign in"><button class="icon sign-in" data-target="#sign-in" aria-label="Sign in" role="tab" aria-controls="sign-in" aria-selected="false"></button></span>
@@ -82,16 +88,14 @@
 					<div id="chat"></div>
 					<div id="connection-error"></div>
 					<form id="form" method="post" action="">
-						<div class="input">
-							<span id="nick"></span>
-							<textarea id="input" class="mousetrap"></textarea>
-							<span id="add-pic-tooltip" class="tooltipped tooltipped-w tooltipped-no-touch" aria-label="Upload picture">
-							  <button id="add_pic" aria-label="Upload picture"></button>
-							</span>
-							<span id="submit-tooltip" class="tooltipped tooltipped-w tooltipped-no-touch" aria-label="Send message">
-								<button id="submit" type="submit" aria-label="Send message"></button>
-							</span>
-						</div>
+						<span id="nick"></span>
+						<textarea id="input" class="mousetrap"></textarea>
+						<span id="add-pic-tooltip" class="tooltipped tooltipped-w tooltipped-no-touch" aria-label="Upload picture">
+						  <button id="add_pic" aria-label="Upload picture"></button>
+						</span>
+						<span id="submit-tooltip" class="tooltipped tooltipped-w tooltipped-no-touch" aria-label="Send message">
+							<button id="submit" type="submit" aria-label="Send message"></button>
+						</span>
 					</form>
 				</div>
 				<div id="sign-in" class="window" role="tabpanel" aria-label="Sign-in"></div>
@@ -102,10 +106,7 @@
 			</article>
 		</div>
 
-		<div id="context-menu-container">
-			<ul id="context-menu"></ul>
-		</div>
-
+		<div id="context-menu-container"></div>
 		<div id="image-viewer"></div>
 
 		<script src="js/bundle.vendor.js"></script>

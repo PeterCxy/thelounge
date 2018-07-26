@@ -18,7 +18,6 @@ require("./webpush");
 require("./keybinds");
 require("./clipboard");
 const contextMenuFactory = require("./contextMenuFactory");
-const contextMenuContainer = $("#context-menu-container");
 
 $(function() {
 	const sidebar = $("#sidebar, #footer");
@@ -29,10 +28,6 @@ $(function() {
 	const viewport = $("#viewport");
 
 	function storeSidebarVisibility(name, state) {
-		if ($(window).outerWidth() < utils.mobileViewportPixels) {
-			return;
-		}
-
 		storage.set(name, state);
 
 		utils.togglePreviewMoreButtonsIfNeeded();
@@ -41,20 +36,26 @@ $(function() {
 	// If sidebar overlay is visible and it is clicked, close the sidebar
 	$("#sidebar-overlay").on("click", () => {
 		slideoutMenu.toggle(false);
-		storeSidebarVisibility("thelounge.state.sidebar", false);
+
+		if ($(window).outerWidth() >= utils.mobileViewportPixels) {
+			storeSidebarVisibility("thelounge.state.sidebar", false);
+		}
 	});
 
 	$("#windows").on("click", "button.lt", () => {
 		const isOpen = !slideoutMenu.isOpen();
 
 		slideoutMenu.toggle(isOpen);
-		storeSidebarVisibility("thelounge.state.sidebar", isOpen);
+
+		if ($(window).outerWidth() >= utils.mobileViewportPixels) {
+			storeSidebarVisibility("thelounge.state.sidebar", isOpen);
+		}
 	});
 
 	viewport.on("click", ".rt", function() {
-		const isOpen = !viewport.hasClass("rt");
+		const isOpen = !viewport.hasClass("userlist-open");
 
-		viewport.toggleClass("rt", isOpen);
+		viewport.toggleClass("userlist-open", isOpen);
 		chat.find(".chan.active .chat").trigger("keepToBottom");
 		storeSidebarVisibility("thelounge.state.userlist", isOpen);
 
@@ -78,11 +79,6 @@ $(function() {
 	viewport.on("click", "#chat .menu", function(e) {
 		e.currentTarget = $(`#sidebar .chan[data-id="${$(this).closest(".chan").data("id")}"]`)[0];
 		return contextMenuFactory.createContextMenu($(this), e).show();
-	});
-
-	contextMenuContainer.on("click contextmenu", function() {
-		contextMenuContainer.hide();
-		return false;
 	});
 
 	function resetInputHeight(input) {
@@ -140,7 +136,7 @@ $(function() {
 		return false;
 	});
 
-	// PeterCxy Mod: Upload picture through one.angry.im
+	// PeterCxy Mod: Upload picture through fars.ee
 	$("#form #add_pic").on("click", function(ev) {
 		ev.preventDefault();
 		var text_input = $('#input');
@@ -150,10 +146,10 @@ $(function() {
 		input.on("change", function() {
 			if (input[0].files.length == 0) return;
 			var data = new FormData();
-			data.append("file", input[0].files[0]);
+			data.append("c", input[0].files[0]);
 			input.remove();
 			$.ajax({
-				url: "https://one.angry.im/images?noredir",
+				url: "https://fars.ee/",
 				data: data,
 				processData: false,
 				contentType: false,
@@ -177,7 +173,7 @@ $(function() {
 					if (text_input.val().trim() != "") {
 						url = text_input.val().trim() + " " + url;
 					}
-					text_input.val(url + "?o");
+					text_input.val(url);
 				}
 			});
 		});

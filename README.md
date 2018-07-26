@@ -68,13 +68,13 @@ Run this in a terminal to install (or upgrade) the latest stable release from
 [npm registry](https://www.npmjs.com/):
 
 ```sh
-[sudo] yarn global add thelounge
+yarn global add thelounge
 ```
 
 If you already have The Lounge installed globally, use the following command to update it:
 
 ```sh
-[sudo] yarn global upgrade thelounge
+yarn global upgrade thelounge
 ```
 
 When installation is complete, run:
@@ -113,6 +113,6 @@ fork.
 
 Before submitting any change, make sure to:
 
-- Read the [Contributing instructions](https://github.com/thelounge/thelounge/blob/master/CONTRIBUTING.md#contributing)
+- Read the [Contributing instructions](https://github.com/thelounge/thelounge/blob/master/.github/CONTRIBUTING.md#contributing)
 - Run `npm test` to execute linters and test suite
 - Run `npm run build` if you change or add anything in `client/js` or `client/views`
